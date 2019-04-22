@@ -8,7 +8,7 @@ module.exports = {
 
 	// More info about settings: https://moleculer.services/docs/0.13/moleculer-web.html
 	settings: {
-		port: process.env.PORT || 3000,
+		port: process.env.PORT || 3030,
 
 		routes: [{
 			path: "/api",
@@ -17,6 +17,19 @@ module.exports = {
 				"**"
 			]
 		}],
+		aliases: {
+			"GET /assets/upload": "assets.upload",
+		},
+		// Parse body content
+		bodyParsers: {
+			json: {
+				strict: false
+			},
+			urlencoded: {
+				extended: false
+			}
+		},
+
 
 		// Serve assets from "public" folder
 		assets: {
