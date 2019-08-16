@@ -2,6 +2,9 @@
 const multer = require('multer');
 const aws = require('aws-sdk');
 const multerS3 = require('multer-s3');
+const dotenv = require('dotenv');
+
+const foo = dotenv.config();
 
 module.exports = {
 	name: "assets",
@@ -51,7 +54,7 @@ module.exports = {
 	 * Service created lifecycle event handler
 	 */
 	created() {
-
+		console.log("Assets service instance created");
 	},
 
 	/**
