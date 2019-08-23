@@ -18,7 +18,7 @@ module.exports = {
 			]
 		}],
 		aliases: {
-			"GET /assets/upload": "assets.upload",
+			"POST /assets/upload": "assets.upload",
 		},
 		// Parse body content
 		bodyParsers: {
