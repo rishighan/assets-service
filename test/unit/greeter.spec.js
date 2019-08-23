@@ -11,6 +11,14 @@ describe("Test 'greeter' service", () => {
 	beforeAll(() => broker.start());
 	afterAll(() => broker.stop());
 
+	describe("Test 'greeter.hello' action", () => {
+
+		it("It should run", () => {
+			expect("hello").toEqual("hello");
+		});
+
+	});
+
 	
 
 });
