@@ -1,6 +1,7 @@
 "use strict";
 
 const s3Utils = require('../util/s3-utils.js');
+let multer;
 
 module.exports = {
 	name: "assets",
@@ -19,7 +20,10 @@ module.exports = {
 
 			},
 			handler(broker) {
-				console.log()
+				// return new Promise((resolve, reject) => {
+					console.log(broker.params);
+					// multer.single(broker.params)
+				// })
 
 			}
 		}
@@ -43,7 +47,7 @@ module.exports = {
 	 * Service started lifecycle event handler
 	 */
 	started() {
-		s3Utils.initMulter();
+		multer = s3Utils.initMulter();
 	},
 
 	/**
