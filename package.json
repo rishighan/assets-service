@@ -21,6 +21,7 @@
     "eslint": "^5.10.0",
     "jest": "^24.7.1",
     "jest-cli": "^24.7.1",
+    "moleculer-axios": "^0.1.0",
     "moleculer-repl": "^0.5.3",
     "multer": "^1.4.2"
   },

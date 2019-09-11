@@ -1,6 +1,27 @@
 "use strict";
+const AWS = require('aws-sdk');
+const dotenv = require("dotenv");
+const awsCredentials = dotenv.config()
 
-const s3Utils = require('../util/s3-utils.js');
+const s3 = new AWS.S3({
+	accessKeyId: awsCredentials.parsed.AWS_ACCESS_KEY_ID,
+	secretAccessKey: awsCredentials.parsed.AWS_SECRET_ACCESS_KEY, 
+});
+
+const uploadFile = (data) => {
+	console.log(data);
+	   const params = {
+		   Bucket: awsCredentials.parsed.S3_BUCKET_NAME, // pass your bucket name
+		   Key: 'attachedFile', // file will be saved as testBucket/contacts.csv
+		   Body: data, 
+	   };
+	   s3.upload(params, function(s3Err, data) {
+		   if (s3Err) throw s3Err
+		   console.log(`File uploaded successfully at ${data.Location}`)
+	   });
+  };
+  
+  uploadFile();
 
 module.exports = {
 	name: "assets",
@@ -15,12 +36,12 @@ module.exports = {
 				keys: [],
 			},
 			params: {
-				// file: { type: "file", optional: false } ,
+				// payload: { type: "object", optional: false } ,
 
 			},
 			handler(broker) {
-				console.log()
-
+				console.log(broker.params)
+				uploadFile(broker.params);
 			}
 		}
 	},
@@ -43,7 +64,6 @@ module.exports = {
 	 * Service started lifecycle event handler
 	 */
 	started() {
-		s3Utils.initMulter();
 	},
 
 	/**
