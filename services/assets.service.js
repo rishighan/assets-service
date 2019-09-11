@@ -1,7 +1,12 @@
 "use strict";
 
-const s3Utils = require('../util/s3-utils.js');
-let multer;
+const aws = require("aws-sdk");
+const dotenv = require("dotenv");
+const awsCredentials = dotenv.config();
+const s3 = new aws.S3({
+	accessKeyId: awsCredentials.parsed.AWS_ACCESS_KEY_ID,
+	secretAccessKey: awsCredentials.parsed.AWS_SECRET_ACCESS_KEY,
+});
 
 module.exports = {
 	name: "assets",
@@ -20,10 +25,15 @@ module.exports = {
 
 			},
 			handler(broker) {
-				// return new Promise((resolve, reject) => {
-					console.log(broker.params);
-					// multer.single(broker.params)
-				// })
+				console.log(broker.params);
+				const params = {
+					Bucket: awsCredentials.parsed.S3_BUCKET_NAME,
+					Body: broker.params,
+					Key: "key",
+				};
+				s3.upload(params, (error, data) => {
+					console.log(error, data);
+				});
 
 			}
 		}
@@ -47,7 +57,6 @@ module.exports = {
 	 * Service started lifecycle event handler
 	 */
 	started() {
-		multer = s3Utils.initMulter();
 	},
 
 	/**
