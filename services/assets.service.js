@@ -40,8 +40,21 @@ module.exports = {
 
 			},
 			handler(broker) {
+<<<<<<< HEAD
 				console.log(broker.params)
 				uploadFile(broker.params);
+=======
+				console.log(broker.params);
+				const params = {
+					Bucket: awsCredentials.parsed.S3_BUCKET_NAME,
+					Body: broker.params,
+					Key: "key",
+				};
+				s3.upload(params, (error, data) => {
+					console.log(error, data);
+				});
+
+>>>>>>> f55b5518845c87dcbf7eac90f44701358512567a
 			}
 		}
 	},
