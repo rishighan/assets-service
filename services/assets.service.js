@@ -1,7 +1,7 @@
 "use strict";
 const AWS = require('aws-sdk');
 const dotenv = require("dotenv");
-const awsCredentials = dotenv.config()
+const awsCredentials = dotenv.config();
 
 const s3 = new AWS.S3({
 	accessKeyId: awsCredentials.parsed.AWS_ACCESS_KEY_ID,
@@ -22,11 +22,12 @@ module.exports = {
 				keys: [],
 			},
 			params: {
-				// payload: { type: "object", optional: false } ,
+				fileData: { type: "object", optional: true } ,
 
 			},
 			handler(context) {
-				console.log('PARAMS', context.params);
+				console.log('params', context.params);
+				console.log('context.meta.$multipart', context.meta.$multipart);
 				const params = {
 					Bucket: awsCredentials.parsed.S3_BUCKET_NAME,
 					Body: context.meta,
@@ -45,24 +46,11 @@ module.exports = {
 	methods: {
 
 	},
-
-	/**
-	 * Service created lifecycle event handler
-	 */
 	created() {
-		
 		console.log("Assets service instance created");
 	},
-
-	/**
-	 * Service started lifecycle event handler
-	 */
 	started() {
 	},
-
-	/**
-	 * Service stopped lifecycle event handler
-	 */
 	stopped() {
 
 	}
