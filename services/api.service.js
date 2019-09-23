@@ -29,7 +29,6 @@ module.exports = {
 					json: false,
 					urlencoded: false
 				},
-
 				aliases: {
 					// File upload from HTML multipart form
 					"POST /": "multipart:v1.assets.upload",

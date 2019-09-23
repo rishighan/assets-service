@@ -55,24 +55,11 @@ module.exports = {
 	},
 	methods: {
 	},
-
-	/**
-	 * Service created lifecycle event handler
-	 */
 	created() {
-
 		console.log("Assets service instance created");
 	},
-
-	/**
-	 * Service started lifecycle event handler
-	 */
 	started() {
 	},
-
-	/**
-	 * Service stopped lifecycle event handler
-	 */
 	stopped() {
 
 	}
