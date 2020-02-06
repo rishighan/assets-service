@@ -30,6 +30,7 @@
     "moleculer": "^0.13.0",
     "moleculer-web": "^0.9.0-beta6",
     "nats": "^1.0.1",
+    "node-zookeeper-client": "^1.1.0",
     "request-promise": "^4.2.4"
   },
   "engines": {

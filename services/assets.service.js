@@ -2,6 +2,7 @@
 const AWS = require('aws-sdk');
 const dotenv = require("dotenv");
 const awsCredentials = dotenv.config();
+const creds = require("../util/s3-utils");
 
 const s3 = new AWS.S3({
 	accessKeyId: awsCredentials.parsed.AWS_ACCESS_KEY_ID,
@@ -39,14 +40,15 @@ module.exports = {
 			}
 		},
 		delete: {
-			params: {
-				fileID: {
-					type: "string",
-					optional: false
-				}
-			},
-			handler(context) {
-
+			// params: {
+			// 	fileID: {
+			// 		type: "string",
+			// 		optional: false
+			// 	}
+			// },
+			async handler(context) {
+				const data = await creds.getS3Instance();
+				return data;
 			}
 		}
 	},

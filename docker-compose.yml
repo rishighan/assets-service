@@ -1,69 +1,44 @@
 version: "3.2"
 
 services:
-
-  api:
+  assets-api:
     build:
       context: .
-    image: assets-service
+    image: frishi/assets-service
     container_name: assets-service-api
     env_file: docker-compose.env
     environment:
       SERVICES: api
-      PORT: 3000
-    depends_on:
+      PORT: 6000
+    external_links:
       - nats
+      - zookeeper
     labels:
-      - "traefik.enable=true"
-      - "traefik.backend=api"
-      - "traefik.port=3000"
-      - "traefik.frontend.entryPoints=http"
-      - "traefik.frontend.rule=PathPrefix:/"
+      - traefik.http.services.assets-api.loadbalancer.server.port=6000
+      - traefik.enable=true
+      - traefik.docker.network=gateway
+      - traefik.http.routers.assets-api.service=assets-api@docker
+      # - traefik.http.routers.posts-api.rule=Host(`services.rishighan.com`) && PathPrefix(`/api/v1/assets/`)
+      - traefik.http.routers.assets-api.rule=Host(`localhost`) && PathPrefix(`/api/v1/assets/`)
     networks:
-      - internal
+      - gateway
 
-  greeter:
+  assets:
     build:
       context: .
-    image: assets-service
-    container_name: assets-service-greeter
+    image: frishi/assets-service
+    container_name: assets-service
     env_file: docker-compose.env
     environment:
-      SERVICES: greeter
+      SERVICES: assets
     labels:
       - "traefik.enable=false"
-    depends_on:
+    external_links:
       - nats
+      - zookeeper
     networks:
-      - internal
-
-  nats:
-    image: nats
-    labels:
-      - "traefik.enable=false"
-    networks:
-      - internal
-
-  traefik:
-    image: traefik
-    container_name: traefik
-    command:
-      - "--api"
-      - "--docker"
-      - "--docker.watch"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.backend=traefik"
-      - "traefik.port=8080"
-    ports:
-      - 3000:80
-      - 3001:8080
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /dev/null:/traefik.toml
-    networks:
-      - internal
-      - default
+      - gateway
 
 networks:
-  internal:
+  gateway: 
+    external: true

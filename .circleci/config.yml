@@ -1,37 +1,48 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
-      # specify the version you desire here
-      - image: circleci/node:7.10
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
-    working_directory: ~/assets-service
-
+      - image: "circleci/node:10.16.0"
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
-      - run: npm install
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-
-      # run tests!
-      - run: yarn test
+      - run:
+          name: Update to latest npm version
+          command: "sudo npm install -g npm@latest"
+      - restore_cache: 
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Install `docker-compose`
+          command: |
+            curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+      - setup_remote_docker:
+          docker_layer_caching: false 
+      - run:
+          name: Build using `docker-compose`
+          command: |
+            docker-compose build
+      - run:
+          name: Login for Docker Hub
+          command: | 
+            echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
+      - run:
+          name: Push to Docker Hub
+          command: |
+            docker-compose push
+      - run: ssh-keyscan $DIGITALOCEAN_HOST >> ~/.ssh/known_hosts
+      - add_ssh_keys:
+          fingerprints:
+            - 6f:6b:d9:0d:c2:a3:2c:d7:be:b7:f0:27:18:fd:17:bf
+      - run:
+          name: Deploy to Digital Ocean Droplet
+          command: |
+            # deploy script 
+            bash ./scripts/deploy/deploy.sh -u $DIGITALOCEAN_USERNAME \
+                                            -h $DIGITALOCEAN_HOST \
+                                            -s $SERVICE_NAME \
+                                            -r $REPOSITORY_BASE_URL 
+      

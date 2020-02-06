@@ -1,27 +1,47 @@
-const multer = require("multer");
 const aws = require("aws-sdk");
-const multerS3 = require("multer-s3");
-const dotenv = require("dotenv");
-const awsCredentials = dotenv.config();
+const zookeeper = require("node-zookeeper-client");
+
+const client = zookeeper.createClient(process.env.ZOOKEEPER_HOST);
+
+const getNodeData = (path, client) => {
+	return new Promise((resolve, reject) => {
+		client.getData(
+			path,
+			(event) => {
+				console.log("Got event: %s.", event);
+			},
+			(error, data, stat) => {
+				if (error) {
+					console.log(error.stack);
+					reject(error);
+				}
+				resolve(data.toString("utf8"));
+				// console.log('Got data: %s', data.toString('utf8'));
+			}
+		);
+	});
+};
+
+const getS3Instance = async () => {
+	const accessKeyId = getNodeData("/aws/access_key_id", client);
+	const secretAccessKey = getNodeData("/aws/secret_access_key", client);
+	const bucketName = getNodeData("/aws/s3_bucket_name", client);
+	const awsCredentials = await Promise.all([accessKeyId, secretAccessKey, bucketName]);
+	console.log(awsCredentials);
+	aws.config.update({
+		accessKeyId: awsCredentials[0],
+		secretAccessKey: awsCredentials[1], 
+	});
+	return new aws.S3();
+	 
+};
+
+client.once("connected", () => {
+	console.log("Connected to the Zookeeper server.");
+});
+
+client.connect();
 
 module.exports = {
-	initMulter: () => {
-		aws.config.update({
-			accessKeyId: awsCredentials.parsed.AWS_ACCESS_KEY_ID,
-			secretAccessKey: awsCredentials.parsed.SECRET_ACCESS_KEY, 
-		});
-		const s3 = new aws.S3();
-		return multer({
-			storage: multerS3({
-				s3: s3,
-				bucket: awsCredentials.parsed.S3_BUCKET_NAME,
-				metadata: (req, file, callback) => {
-					callback(null, Object.assign({}, req.body));
-				},
-				key: (req, file, callback) => {
-					callback(null, file.originalname);
-				}
-			})
-		});
-	}
+	getS3Instance
 };
