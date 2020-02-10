@@ -23,9 +23,9 @@ module.exports = {
 		],
 		aliases: {
 			// File upload from HTML multipart form
-			"POST /": "multipart:assets.upload",
+			"POST /upload": "multipart:assets.upload",
 			// File upload from AJAX or cURL
-			"PUT /": "stream:assets.upload",
+			"PUT /upload": "stream:assets.upload",
 			// File upload from HTML form and overwrite busboy config
 			"POST /multi": {
 				type: "multipart",

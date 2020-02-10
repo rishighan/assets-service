@@ -22,12 +22,17 @@ const getNodeData = (path, client) => {
 	});
 };
 
+client.once("connected", () => {
+	console.log("Connected to the Zookeeper server.");
+});
+
+client.connect();
+
 const getS3Instance = async () => {
 	const accessKeyId = getNodeData("/aws/access_key_id", client);
 	const secretAccessKey = getNodeData("/aws/secret_access_key", client);
 	const bucketName = getNodeData("/aws/s3_bucket_name", client);
 	const awsCredentials = await Promise.all([accessKeyId, secretAccessKey, bucketName]);
-	console.log(awsCredentials);
 	aws.config.update({
 		accessKeyId: awsCredentials[0],
 		secretAccessKey: awsCredentials[1], 
@@ -36,11 +41,7 @@ const getS3Instance = async () => {
 	 
 };
 
-client.once("connected", () => {
-	console.log("Connected to the Zookeeper server.");
-});
 
-client.connect();
 
 module.exports = {
 	getS3Instance
