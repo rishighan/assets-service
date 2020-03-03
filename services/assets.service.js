@@ -1,5 +1,5 @@
 "use strict";
-const S3Util = require("../util/s3-utils");
+const { getS3Instance } = require("../util/s3-utils");
 
 
 module.exports = {
@@ -14,12 +14,8 @@ module.exports = {
 			cache: {
 				keys: [],
 			},
-			params: {
-				data: { type: "object", optional: false },
-			},
 			handler(context) {
-				return this.s3().then(client => {
-				console.log(context);
+				return getS3Instance().then(client => {
 					const fileStream = context.params;
 					const params = {
 						Bucket: 'rishighan',
@@ -41,8 +37,8 @@ module.exports = {
 			// 		optional: false
 			// 	}
 			// },
-			handler(context) {
-				return this.s3().then(client => client);
+			async handler(context) {
+				const s3 = await getS3Instance();
 			}
 		}
 	},
@@ -50,10 +46,6 @@ module.exports = {
 
 	},
 	methods: {
-		s3: async () => {
-			const s3Instance = await S3Util.getS3Instance();
-			return s3Instance;
-		},
 	},
 	created() {
 		console.log("Assets service instance created");
