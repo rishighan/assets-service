@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.441.0",
+    "lodash": "^4.17.15",
     "moleculer": "^0.14.3",
     "moleculer-web": "^0.9.1",
     "nats": "^1.0.1",

@@ -11,6 +11,14 @@ module.exports = {
   settings: {
     port: 6000,
     path: "/assets",
+    cors: {
+			origin: "*",
+			methods: ["GET", "OPTIONS", "POST", "PUT", "DELETE"],
+			allowedHeaders: [],
+			exposedHeaders: [],
+			credentials: false,
+			maxAge: 3600
+		},
     routes: [
       {
         path: "/api",
@@ -35,9 +43,9 @@ module.exports = {
             action: "v1.assets.upload"
           },
           // File upload from AJAX or cURL
-		  "PUT /stream": "stream:v1.assets.upload",
-		  "GET /delete": "v1.assets.delete",
-
+          "PUT /stream": "stream:v1.assets.upload",
+          "GET /torrent": "v1.assets.torrent",
+          "POST /delete": "v1.assets.delete"
         },
 
         // Route level busboy config.
@@ -48,6 +56,6 @@ module.exports = {
           }
         }
       }
-    ],
+    ]
   }
 };
