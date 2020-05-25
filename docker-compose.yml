@@ -18,8 +18,8 @@ services:
       - traefik.enable=true
       - traefik.docker.network=gateway
       - traefik.http.routers.assets-api.service=assets-api@docker
-      # - traefik.http.routers.posts-api.rule=Host(`services.rishighan.com`) && PathPrefix(`/api/v1/assets/`)
-      - traefik.http.routers.assets-api.rule=Host(`localhost`) && PathPrefix(`/assets/api/`)
+      - traefik.http.routers.posts-api.rule=Host(`services.rishighan.com`) && PathPrefix(`/api/v1/assets/`)
+      # - traefik.http.routers.assets-api.rule=Host(`localhost`) && PathPrefix(`/assets/api/`)
     networks:
       - gateway
 
