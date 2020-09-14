@@ -13,15 +13,9 @@ services:
     external_links:
       - nats
       - zookeeper
-    labels:
-      - traefik.http.services.assets-api.loadbalancer.server.port=6000
-      - traefik.enable=true
-      - traefik.docker.network=gateway
-      - traefik.http.routers.assets-api.service=assets-api@docker
-      - traefik.http.routers.assets-api.rule=Host(`services.rishighan.com`) && PathPrefix(`/assets/api`)
-      # - traefik.http.routers.assets-api.rule=Host(`localhost`) && PathPrefix(`/assets/api/`)
+      - caddy
     networks:
-      - gateway
+      - main-network 
 
   assets:
     build:
@@ -31,14 +25,13 @@ services:
     env_file: docker-compose.env
     environment:
       SERVICES: assets
-    labels:
-      - "traefik.enable=false"
     external_links:
       - nats
       - zookeeper
+      - caddy
     networks:
-      - gateway
+      - main-network
 
 networks:
-  gateway: 
+  main-network:
     external: true
