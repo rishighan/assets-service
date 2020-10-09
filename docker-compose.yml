@@ -4,7 +4,7 @@ services:
   assets-api:
     build:
       context: .
-    image: frishi/assets-service
+    image: frishi/assets-service-api
     container_name: assets-service-api
     env_file: docker-compose.env
     environment:
